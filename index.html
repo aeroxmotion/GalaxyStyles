@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Test GalaxyStyles</title>
+  </head>
+  <body>
+    <root-element></root-element>
+
+    <script type="module">
+      import { setup, GalaxyElement, html, css } from 'https://cdn.jsdelivr.net/gh/LosMaquios/GalaxyJS/dist/galaxy.esm.js'
+      import GalaxyStylesPlugin from './index.js'
+
+      class ColElement extends GalaxyElement {
+        half = false
+
+        static get style () {
+          return css`
+            :host {
+              font-size: 0;
+            }
+
+            div {
+              font-size: 16px;
+            }
+          `
+        }
+
+        static get template () {
+          return html`
+            <div class="{{ (half ? 'half-' : '') + 'col' }}">
+              <slot></slot>
+            </div>
+          `
+        }
+      }
+
+      class RootElement extends GalaxyElement {
+        static get children () {
+          return [
+            ColElement
+          ]
+        }
+
+        static get template () {
+          return html`
+            <col-element .half="true" :id="'a'">Half</col-element>
+            <col-element>Full</col-element>
+            <col-element .half="true">Half</col-element>
+          `
+        }
+      }
+
+      setup({
+        root: RootElement,
+        plugins: [
+          GalaxyStylesPlugin.with({
+            style: `
+              div {
+                display: inline-block;
+              }
+
+              .col {
+                background-color: tomato;
+                width: 50%;
+              }
+
+              .half-col {
+                background-color: seagreen;
+                width: 25%;
+              }
+            `
+          })
+        ]
+      })
+    </script>
+  </body>
+</html>
